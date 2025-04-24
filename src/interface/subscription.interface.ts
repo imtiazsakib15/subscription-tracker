@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongoose';
+
 export interface ISubscription {
   _id: string;
   name: string;
@@ -9,7 +11,7 @@ export interface ISubscription {
   status: Status;
   startDate: Date;
   renewalDate: Date;
-  user: string;
+  user: ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
