@@ -31,7 +31,7 @@ const signUp: RequestHandler = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      message: 'user created',
+      message: 'User created',
       data: { user: newUser, token },
     });
   } catch (error) {
@@ -39,4 +39,33 @@ const signUp: RequestHandler = async (req, res, next) => {
   }
 };
 
-export { signUp };
+const signIn: RequestHandler = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password)
+      throw new Error('Please provide all required fields');
+
+    const user = await User.findOne({ email });
+    if (!user) throw new Error('User not found');
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) throw new Error('Invalid password');
+
+    user.password = '';
+
+    const token = jwt.sign({ userId: user._id }, config.JWT_SECRET!, {
+      expiresIn: config.JWT_EXPIRES_IN,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'User logged in successfully',
+      data: { user, token },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { signUp, signIn };
