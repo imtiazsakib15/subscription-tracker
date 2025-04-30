@@ -11,7 +11,7 @@ const authorize: RequestHandler = async (req, res, next) => {
     const decoded = jwt.verify(token, config.JWT_SECRET!);
     const user = await User.findById(decoded.userId);
     if (!user) throw new Error('User not found');
-    req.user = user;
+    req.user = { _id: user._id };
     next();
   } catch (error) {
     res.status(401).json({

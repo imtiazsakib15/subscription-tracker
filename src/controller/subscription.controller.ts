@@ -19,7 +19,7 @@ const createSubscription: RequestHandler = async (req, res, next) => {
 
 const getUserSubscriptions: RequestHandler = async (req, res, next) => {
   try {
-    if (req.user?._id !== req.params.id) {
+    if (req.user?._id?.toString() !== req.params.id) {
       return res.status(403).json({
         success: false,
         message: 'Forbidden',
