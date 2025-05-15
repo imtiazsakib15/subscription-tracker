@@ -13,6 +13,8 @@ const {
   QSTASH_TOKEN,
   QSTASH_CURRENT_SIGNING_KEY,
   QSTASH_NEXT_SIGNING_KEY,
+  SMTP_USER,
+  SMTP_PASSWORD,
 } = process.env;
 
 const config = {
@@ -25,6 +27,8 @@ const config = {
   QSTASH_TOKEN,
   QSTASH_CURRENT_SIGNING_KEY,
   QSTASH_NEXT_SIGNING_KEY,
+  SMTP_USER,
+  SMTP_PASSWORD,
 };
 
 export default config;

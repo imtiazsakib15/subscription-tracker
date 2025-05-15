@@ -3,6 +3,7 @@ import Subscription from '../model/subscription.model';
 import { WorkflowContext } from '@upstash/workflow';
 import { ISubscription } from '../interface/subscription.interface';
 import dayjs from 'dayjs';
+import { sendEmail } from '../utils/sendEmail';
 
 const DAYS_BEFORE_ARR: number[] = [7, 5, 3, 1];
 
@@ -45,7 +46,11 @@ const sendReminders = serve<{ subscriptionId: string }>(async (context) => {
       );
     }
 
-    await triggerReminder(context, `Reminder ${daysBefore} days before`);
+    await triggerReminder(
+      context,
+      `Reminder ${daysBefore} days before`,
+      subscription,
+    );
   }
 });
 
@@ -67,10 +72,19 @@ const sleepUntilReminder = async (
   await context.sleepUntil(label, date);
 };
 
-const triggerReminder = async (context: WorkflowContext, label: string) => {
-  return await context.run(label, () => {
+const triggerReminder = async (
+  context: WorkflowContext,
+  label: string,
+  subscription: ISubscription,
+) => {
+  return await context.run(label, async () => {
     console.log(`Triggering ${label} reminder`);
-    // Here you can add the logic to send the reminder, e.g., sending an email or a notification
+
+    await sendEmail({
+      to: subscription.user.email,
+      subject: `Subscription Reminder: '${label}'`,
+      text: `This is a reminder for your '${subscription.name}' subscription renewal. Please take action if needed.`,
+    });
   });
 };
 
